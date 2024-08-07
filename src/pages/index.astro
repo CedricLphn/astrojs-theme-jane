@@ -1,0 +1,41 @@
+---
+import {getCollection} from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Post from "../components/Post.astro";
+import Pagination from "../components/Pagination.astro";
+
+const posts = (await getCollection('posts')).sort(
+    (a, b) => a.data.date?.valueOf() - b.data.date?.valueOf()
+)
+    .reverse()
+    .slice(0, 4)
+
+const totalPosts = (await getCollection('posts')).length;
+const pageSize = 4;
+const lastPage = Math.ceil(totalPosts / pageSize);
+
+---
+
+<Layout title="My Blog">
+    {posts.map((posts) => (
+            <Post marginAuto={true}
+                  title={posts.data.title}
+                  tags={posts.data.tags}
+                  href={`/blog/${posts.slug}`}
+                  date={posts.data.pubDate}
+                  updatedAt={posts.data.updatedAt}
+            >
+                {posts.data?.description}
+            </Post>
+    )
+    )}
+    <Pagination
+            length={lastPage}
+            currentUrl={``}
+            currentPage={1}
+            firstUrl={`blog`}
+            prevUrl={``}
+            nextUrl={`/2`}
+            lastUrl={`${lastPage}`}
+    />
+</Layout>

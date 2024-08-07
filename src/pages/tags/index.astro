@@ -1,0 +1,43 @@
+---
+import {getCollection} from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Block from "../../components/Block.astro";
+import {formatDate} from "../../utils/format-date";
+
+const posts = await getCollection('posts');
+let tags : string[] = posts.reduce((acc, post) : string[] => {
+    if(!post.data.tags) {
+        return acc;
+    }
+
+    post.data.tags.forEach((tag: string) => {
+        if (!acc.includes(tag)) {
+            acc.push(tag);
+        }
+    });
+
+    if (!acc.includes('Other')) {
+        acc.push('Other');
+    }
+    return acc;
+}, []);
+
+
+// add other tag at the end
+tags = tags.filter(tag => tag !== 'Other').concat(tags.filter(tag => tag === 'Other'));
+---
+<Layout title="Tags">
+    {tags.map((tag : string) => (
+
+    <Block marginAuto={true}>
+        <h1 class="post-title text-3xl text-center">{tag}</h1>
+        <ul>
+            {posts.filter(post => post.data.tags?.includes(tag) || (!post.data.tags && tag === 'Other')).map(post => (
+                <li>
+                    <a href={`/blog/${post.slug}`}>{post.data.title} - {formatDate(post.data.pubDate)}</a>
+                </li>
+            ))}
+        </ul>
+    </Block>
+    ))}
+</Layout>

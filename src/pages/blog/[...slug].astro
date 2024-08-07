@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import Post from "../../components/Post.astro";
+import Layout from "../../layouts/Layout.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+
+export async function getStaticPaths() {
+    const posts = await getCollection('posts');
+    return posts
+        .map((post) => ({
+        params: { slug: post.slug },
+        props: post,
+    }))
+}
+
+const post = Astro.props;
+const { Content } = await post.render();
+
+const posts = await post.render();
+
+---
+<Layout title="">
+    <div class="content-wrapper">
+        {posts.headings.length > 0 && (<TableOfContents headings={posts.headings} />)}
+        <Post
+            {...post.data}
+            date={post.data.pubDate}
+            updatedAt={post.data.updatedAt}
+        >
+            <Content />
+        </Post>
+    </div>
+
+</Layout>

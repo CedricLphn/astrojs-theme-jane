@@ -1,0 +1,60 @@
+---
+import Navigation from "../components/Navigation.astro";
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+	<header>
+		<nav>
+			<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+				<div class="relative flex h-16 items-center justify-between">
+					<div class="header flex flex-shrink-0 items-center">
+						Jane
+					</div>
+					<Navigation />
+
+				</div>
+			</div>
+		</nav>
+	</header>
+		<main class="bg-gray-100 p-16">
+				<slot />
+		</main>
+	<footer>
+		<div class="text-center">
+				&copy; 2024 Your website - Theme <a href="https://github.com/CedricLphn/astrojs-theme-jane" target="_blank">Jane for Astro</a> - Powered by <a href="https://astro.build" target="_blank">Astro</a>
+		</div>
+	</footer>
+	</body>
+</html>
+<style is:global>
+.header {
+	font-size: 36px;
+	font-family: cursive, LiSu, sans-serif;
+}
+
+.menu-item a {
+	font-size: 1.1rem;
+	font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+a:hover,a:focus {
+	color: #c05b4d;
+	border-bottom: 1px solid #c05b4d
+}
+</style>

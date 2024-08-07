@@ -1,0 +1,43 @@
+---
+interface Props {
+    marginAuto?: boolean;
+}
+
+const { marginAuto = false } = Astro.props;
+
+const marginAutoClass = marginAuto ? 'mx-auto' : '';
+---
+<div class=`container leading-7 bg-white p-12 m-8 px-16 max-w-3xl ${marginAutoClass}`>
+    <slot />
+</div>
+<style is:global>
+    h1 {
+        font-weight: 600;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h2 {
+        font-weight: 600;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h3 {
+        font-weight: 600;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h4 {
+        font-weight: 600;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h5 {
+        font-weight: 600;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h6 {
+        font-weight: 600;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+</style>

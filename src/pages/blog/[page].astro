@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Pagination from "../../components/Pagination.astro";
+import Post from "../../components/Post.astro";
+
+export async function getStaticPaths({ paginate }) {
+    const posts = (await getCollection('posts')).sort(
+        (a, b) => a.data.pubDate?.valueOf() - b.data.pubDate?.valueOf()
+    )
+        .reverse()
+    return paginate(posts, { pageSize: 4 });
+
+}
+
+const { page } : any = Astro.props;
+
+---
+
+<Layout title="">
+	{page.data.map((posts : any) => (
+		<Post marginAuto={true}
+              title={posts.data.title}
+              tags={posts.data.tags}
+              href={`/blog/${posts.slug}`}
+              updatedAt={posts.data.updatedAt}
+              date={posts.data.pubDate}>
+            {posts.data?.description}
+		</Post>
+	))}
+    <Pagination
+            length={page?.lastPage}
+            currentUrl={page?.url?.current}
+            currentPage={page?.currentPage}
+            firstUrl={`/blog`}
+            prevUrl={page?.url?.prev}
+            nextUrl={page?.url?.next}
+            lastUrl={`${page?.lastPage}`}
+    />
+</Layout>

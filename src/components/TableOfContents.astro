@@ -1,0 +1,148 @@
+---
+const { headings } = Astro.props;
+
+function renderTOC(headings: Array<{ depth: number; slug: string; text: string }>) {
+    let currentDepth = 0;
+    let toc = '<ul>';
+    const stack: string[] = [];
+
+    headings.forEach((heading: { depth: number; slug: string; text: string }) => {
+
+        const { depth, slug, text } = heading;
+
+        if (heading.depth > currentDepth) {
+            while (depth > currentDepth) {
+                toc += '<ul>';
+                stack.push('</ul></li>');
+                currentDepth++;
+            }
+        } else if (depth < currentDepth) {
+            while (depth < currentDepth) {
+                toc += stack.pop();
+                currentDepth--;
+            }
+            toc += '</li>';
+        } else {
+            toc += '</li>';
+        }
+
+        toc += `<li id="toc-${slug}"><a href="#${slug}">${text}</a>`;
+    });
+
+    while (currentDepth > 0) {
+        toc += stack.pop();
+        currentDepth--;
+    }
+
+    toc += '</ul>';
+    return toc;
+}
+
+
+
+const tocMarkdown = renderTOC(headings);
+---
+<nav class="toc">
+    <h2>Table of Contents</h2>
+        <Fragment set:html={tocMarkdown}></Fragment>
+</nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: Array.from(Array(101).keys(), x => x / 100)
+        };
+
+        let activeId = '';
+
+        const observerCallback = (entries : any) => {
+            entries.forEach((entry : any) => {
+                const tocItem = document.querySelector(`#toc-${entry.target.id}`);
+                if (entry.isIntersecting) {
+                    if (entry.intersectionRatio > 0.5 && entry.target.id !== activeId) {
+                        if (activeId) {
+                            document.querySelector(`#toc-${activeId}`).classList.remove('current');
+                        }
+                        tocItem.classList.add('current');
+                        activeId = entry.target.id;
+                    }
+                } else {
+                    tocItem.classList.remove('current');
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        document.querySelectorAll('h1, h2').forEach(header => {
+            observer.observe(header);
+        });
+    });
+</script>
+<style is:global>
+    .content-wrapper {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center
+    }
+
+    .content-wrapper nav.toc {
+        position: sticky;
+        top: 1rem;
+        align-self: start;
+        width: 16em;
+    }
+
+    .content-wrapper .toc-title {
+        font-weight: 700
+    }
+
+    .content-wrapper .toc-content {
+        font-size: .8em;
+        line-height: 1.3;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 1em 1em 1em 0;
+    }
+
+    .content-wrapper .toc {
+        margin-top: 8em;
+        margin-left: 1em;
+        font-size: .8em;
+    }
+
+    .content-wrapper .toc .current {
+        border-left: 2px solid #000
+    }
+
+    .content-wrapper .toc .current>a {
+        font-weight: 700;
+        font-size: 1.2em;
+        color: #000
+    }
+
+    .content-wrapper .toc a {
+        text-decoration: none;
+        display: block;
+        border-bottom: 1px solid transparent;
+        padding: .125em 0;
+        transition: all 50ms ease-in-out
+    }
+
+    .content-wrapper .toc a:hover,.content-wrapper .toc a:focus {
+        color: #c05b4d;
+        border-bottom: 1px solid #c05b4d
+    }
+
+    .content-wrapper .toc ul,.content-wrapper .toc ol {
+        list-style: none;
+        margin: 0;
+        padding: 0
+    }
+
+    .content-wrapper .toc li {
+        padding-left: 1em;
+        border-left: 1px solid #000
+    }
+</style>

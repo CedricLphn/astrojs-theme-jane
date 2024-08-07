@@ -1,0 +1,542 @@
+---
+import Block from "./Block.astro";
+import {formatDate} from "../utils/format-date";
+
+const { href, title, date, updatedAt, marginAuto, tags } = Astro.props;
+
+---
+<Block marginAuto={marginAuto}>
+    <div class="post">
+        <div class="post-header pb-5">
+            <h1 class="post-title text-3xl text-center">
+                {href ? <a href=`${href}`>{title}</a> : title}
+            </h1>
+            <div class="leading-8 flex flex-row justify-between mt-5 mb-3">
+                <div class="text-sm italic text-gray-400">
+                    {formatDate(date)} {updatedAt && <>(Last updated: {formatDate(updatedAt)})</>}
+                </div>
+                <div class="text-gray-400 text-sm">
+                    {tags && tags.map((tag : string) => (
+                        <a href={`/tags/${tag}`} class="mr-2">#{tag}</a>
+                    ))}
+                </div>
+            </div>
+            <hr />
+        </div>
+        <div class="post-content">
+            <slot />
+        </div>
+    </div>
+</Block>
+<style is:global>
+
+    .post nav.toc {
+        position: sticky;
+        top: 1rem;
+        align-self: start;
+        width: 16em
+    }
+
+    .post .toc-title {
+        font-weight: 700
+    }
+
+    .post .toc-content {
+        font-size: .8em;
+        line-height: 1.3;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 1em;
+        padding-left: 0
+    }
+
+    .post .toc {
+        margin-top: 8em;
+        margin-left: 1em
+    }
+
+    .post .toc .current {
+        border-left: 2px solid #000
+    }
+
+    .post .toc .current>a {
+        font-weight: 700;
+        font-size: 1.2em;
+        color: #000
+    }
+
+    .post .toc ul,.post .toc ol {
+        list-style: none;
+        margin: 0;
+        padding: 0
+    }
+
+    .post .toc li {
+        padding-left: 1em;
+        border-left: 1px solid #000
+    }
+
+    .post-title {
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+    }
+
+    .post .post-content {
+        word-wrap: break-word
+    }
+
+    .post .post-content .highlight {
+        position: relative;
+        margin: 1em 0;
+        overflow-x: auto;
+        border: 2px solid #ddd;
+        line-height: 1.6
+    }
+
+    .post .post-content .highlight code {
+        all: unset
+    }
+
+    .post .post-content .highlight pre {
+        margin: 0
+    }
+
+    .post .post-content .highlight table {
+        padding: 1em .3em!important
+    }
+
+    .post .post-content .highlight table td:nth-child(2) code::after {
+        position: absolute;
+        top: 0;
+        right: .5em;
+        font-weight: 700;
+        content: attr(data-lang)
+    }
+
+
+
+    .post .post-content code,.post .post-content pre {
+        overflow-x: auto;
+        font-size: .9em;
+        font-family: Menlo,Consolas,source code pro,Inconsolata,Monaco,courier new,monospace
+    }
+
+    .post .post-content p>img {
+        cursor: pointer
+    }
+
+    .post .post-content figure a:hover {
+        border: 0
+    }
+
+    .post .post-content figure.center {
+        clear: both;
+        display: block;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .post .post-content figure.right {
+        float: right;
+        margin-left: 1.5em
+    }
+
+    .post .post-content figure.left {
+        float: left;
+        margin-right: 1.5em
+    }
+
+    .post .post-content figure figcaption {
+        margin-top: .5em;
+        text-align: center;
+        line-height: 1.5em
+    }
+
+    .post .post-content figure figcaption h4 {
+        color: #b5b5b5;
+        margin: 0
+    }
+
+    .post .post-content figure figcaption p {
+        font-size: .9em;
+        color: #b5b5b5;
+        font-style: italic;
+        margin: 0
+    }
+
+    .post .post-content blockquote {
+        margin: 1em auto;
+        color: #555;
+        background-color: #f6f6f6;
+        border-left: 4px solid #999;
+        position: relative;
+        line-height: 1.6;
+        font-family: Open Sans
+    }
+
+    @media screen and (min-width: 1080px) {
+        .post .post-content blockquote {
+            padding:.2em 2em .2em 3em
+        }
+
+        .post .post-content blockquote::before {
+            font-family: Arial;
+            content: "\201C";
+            color: #999;
+            font-size: 4em;
+            position: absolute;
+            left: 10px;
+            top: -10px
+        }
+    }
+
+    @media screen and (max-width: 1080px) {
+        .post .post-content blockquote {
+            padding:.2em 1em
+        }
+    }
+
+    .post .post-content blockquote footer {
+        color: #333;
+        margin-bottom: 1em
+    }
+
+    .post .post-content blockquote cite:before {
+        content: '\2014';
+        padding-right: .3em;
+        padding-left: .3em
+    }
+
+    .post .post-content table {
+        display: block;
+        border: none;
+        width: 100%;
+        overflow-x: auto
+    }
+
+    .post .post-content table td {
+        background-color: #f0e4e4;
+        border: 3px solid #fff;
+        padding: 5px 15px
+    }
+
+    .post .post-content table th {
+        text-align: left;
+        background-color: #a65b5b;
+        color: #fff;
+        border: 3px solid #fff;
+        padding: 5px 15px
+    }
+
+    .post .post-content h1 {
+        border-bottom: 1px solid #ddd;
+        margin-top: 2em
+    }
+
+    .post .post-content h2 {
+        border-bottom: 1px solid #ddd;
+        margin-top: 2em
+    }
+
+    .post .post-content h3 {
+        margin-top: 1.5em
+    }
+
+    .post .post-content a {
+        color: #c05b4d
+    }
+
+    .post .post-content a:hover {
+        border-bottom: 1px solid #c05b4d
+    }
+
+    .post .post-content iframe {
+        margin: 0 auto;
+        display: block;
+        width: 100%
+    }
+
+    .post .post-content .post-summary {
+        margin-bottom: 1em
+    }
+
+    .post .post-content .read-more {
+        text-align: right
+    }
+
+    .post .post-content .read-more .read-more-link {
+        color: #c05b4d;
+        font-size: 1.1em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    .post .post-content .read-more .read-more-link:hover {
+        border-bottom: 1px solid #c05b4d
+    }
+
+    .post .post-content kbd {
+        display: inline-block;
+        padding: .25em;
+        background-color: #fafafa;
+        border: 1px solid #dbdbdb;
+        border-bottom-color: #b5b5b5;
+        border-radius: 3px;
+        box-shadow: inset 0 -1px #b5b5b5;
+        font-size: .8em;
+        line-height: 1.25;
+        font-family: sfmono-regular,liberation mono,roboto mono,Menlo,Monaco,Consolas,courier new,Courier,monospace;
+        color: #4a4a4a
+    }
+
+    .post .post-content dl dt::after {
+        content: ':'
+    }
+
+    .post .post-content .task-list {
+        list-style: none;
+        padding-left: 1.5rem
+    }
+
+    .post .post-content .MJXc-display,.post .post-content .katex-display {
+        overflow-x: auto;
+        overflow-y: hidden
+    }
+
+    .post .header-link {
+        margin-left: .5em;
+        fill: currentColor;
+        visibility: hidden
+    }
+
+    .post .post-content-header:hover .header-link {
+        visibility: visible
+    }
+
+    .post .post-copyright {
+        padding: 10px;
+        background-color: rgba(181,181,181,.1);
+        border: 1px solid #e1e1e1;
+        border-left: solid;
+        margin-top: 3em
+    }
+
+    .post .post-copyright .copyright-item {
+        margin: 5px 0
+    }
+
+    .post .post-copyright .copyright-item a {
+        color: #c05b4d;
+        word-wrap: break-word
+    }
+
+    .post .post-copyright .copyright-item a:hover {
+        border-bottom: 1px solid #c05b4d
+    }
+
+    .post .post-copyright .copyright-item .item-title {
+        display: table-cell;
+        min-width: 5rem;
+        text-align: right;
+        font-weight: 700
+    }
+
+    .post .post-copyright .copyright-item .item-title:after {
+        content: " :"
+    }
+
+    .post .post-copyright .copyright-item .item-content {
+        display: table-cell;
+        padding-left: .5rem
+    }
+
+    .post .post-reward {
+        margin-top: 20px;
+        padding-top: 10px;
+        text-align: center;
+        border-top: 1px dashed #e6e6e6
+    }
+
+
+    h1 {
+        font-size: 1.6em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h2 {
+        font-size: 1.5em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h3 {
+        font-size: 1.3em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h4 {
+        font-size: 1.2em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h5 {
+        font-size: 1.1em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    h6 {
+        font-size: 1em;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    .post .post-reward .reward-button {
+        margin: 15px 0;
+        padding: 3px 7px;
+        display: inline-block;
+        color: #c05b4d;
+        border: 1px solid #c05b4d;
+        border-radius: 5px;
+        cursor: pointer
+    }
+
+    .post .post-reward .reward-button:hover {
+        color: #fefefe;
+        background-color: #c05b4d;
+        transition: .5s
+    }
+
+    .post .post-reward #reward:checked~.qr-code {
+        display: block
+    }
+
+    .post .post-reward #reward:checked~.reward-button {
+        display: none
+    }
+
+    .post .post-reward .qr-code {
+        display: none
+    }
+
+    .post .post-reward .qr-code .qr-code-image {
+        display: inline-block;
+        min-width: 200px;
+        width: 40%;
+        margin-top: 15px
+    }
+
+    .post .post-reward .qr-code .qr-code-image span {
+        display: inline-block;
+        width: 100%;
+        margin: 8px 0
+    }
+
+    .post .post-reward .qr-code .image {
+        width: 200px;
+        height: 200px
+    }
+
+    .post .post-footer {
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif
+    }
+
+    .post .post-footer .post-tags {
+        margin-top: 1em
+    }
+
+    .post .post-footer .post-tags a {
+        color: #c05b4d;
+        word-break: break-all;
+        margin-right: 10px
+    }
+
+    .post .post-footer .post-tags a:hover {
+        border-bottom: 1px solid #c05b4d
+    }
+
+    .post .post-footer .post-tags a::before {
+        content: '#'
+    }
+
+    .post .post-footer .post-nav {
+        margin-top: 1em
+    }
+
+    .post .post-footer .post-nav:before,.post .post-footer .post-nav:after {
+        content: " ";
+        display: table
+    }
+
+    .post .post-footer .post-nav:after {
+        clear: both
+    }
+
+    .post .post-footer .post-nav .prev,.post .post-footer .post-nav .next {
+        font-weight: 600;
+        font-size: 18px;
+        font-family: Athelas,STHeiti,Microsoft Yahei,serif;
+        transition-property: transform;
+        transition-timing-function: ease-out;
+        transition-duration: .3s
+    }
+
+    .post .post-footer .post-nav .prev {
+        float: left
+    }
+
+    .post .post-footer .post-nav .prev:hover {
+        color: #c05b4d;
+        transform: translateX(-4px)
+    }
+
+    .post .post-footer .post-nav .next {
+        float: right
+    }
+
+    .post .post-footer .post-nav .next:hover {
+        color: #c05b4d;
+        transform: translateX(4px)
+    }
+
+    .post .post-footer .post-nav .nav-mobile {
+        display: none
+    }
+
+    @media screen and (max-width: 1080px) {
+        .post .post-footer .post-nav .nav-default {
+            display:none
+        }
+
+        .post .post-footer .post-nav .nav-mobile {
+            display: inline
+        }
+    }
+
+    .post .footnotes {
+        margin-top: 50px;
+        font-size: .9em
+    }
+
+    .post .footnotes hr {
+        border-style: solid;
+        color: #ddd
+    }
+
+    .post .footnote-ref {
+        display: inline;
+        position: relative;
+        margin-left: 3px;
+        font-weight: 700
+    }
+
+    .post .footnote-ref::after {
+        content: "]"
+    }
+
+    .post .footnote-ref::before {
+        content: "["
+    }
+
+    .post .footnote-ref:hover .fn-content {
+        opacity: 1;
+        visibility: visible;
+        transform: translate3d(0,0,0)rotate3d(0,0,0,0)
+    }
+
+</style>

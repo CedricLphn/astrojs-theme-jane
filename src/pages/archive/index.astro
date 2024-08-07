@@ -1,0 +1,42 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import {getCollection} from "astro:content";
+import Block from "../../components/Block.astro";
+
+let posts = await getCollection('posts');
+posts = posts.sort((a, b) => a.data.pubDate?.valueOf() - b.data.pubDate?.valueOf());
+
+const years = posts.reduce((acc, post) => {
+    const date = new Date(post.data.pubDate);
+    const year = date.getFullYear()
+    if(!year) {
+        return acc;
+    }
+
+    if (!acc.includes(year)) {
+        acc.push(year);
+    }
+    return acc;
+}, []);
+
+---
+<Layout title="Archive">
+    {years.map(year => (
+
+    <Block marginAuto={true}>
+            <div>
+                <h1 class="post-title text-2xl text-center">{year}</h1>
+                <ul>
+                    {posts.filter(post => {
+                        const date = new Date(post.data.pubDate);
+                        return date.getFullYear() === year;
+                    }).map(post => (
+                        <li>
+                            <a href={`/blog/${post.slug}`}>{post.data.title} - {post.data.pubDate}</a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+    </Block>
+    ))}
+</Layout>

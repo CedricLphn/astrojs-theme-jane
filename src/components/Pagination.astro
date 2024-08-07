@@ -1,0 +1,86 @@
+---
+const { length, currentPage, firstUrl, prevUrl, nextUrl, lastUrl } = Astro.props;
+const paginationList: string[] = Array.from({ length: length }, (_, i) => (i + 1).toString());
+
+---
+
+<nav aria-label="Blog pages" class="pagination pagination-default">
+    {  currentPage != 1 && (
+            <a href=`${firstUrl}/1` class="pagination__link">
+                <i class="pi-angle-left"></i>
+                <i class="pi-angle-left"></i>
+            </a>
+    )}
+
+    { prevUrl && (
+            <a href={prevUrl} class="pagination__link">
+                <i class="pi-angle-left"></i>
+            </a>
+    )}
+
+    {
+        paginationList.map((num) => (
+                <a href={`${firstUrl}${'/'+(num)}`} class={`pagination__link ${currentPage == num ? "disabled active" : ""}`}>
+                    {num}
+                </a>
+        ))
+    }
+
+    { nextUrl && (
+            <a href={nextUrl} class="pagination__link">
+                <i class="pi-angle-right"></i>
+            </a>
+    )}
+
+    { lastUrl != currentPage && (
+            <a href={lastUrl} class="pagination__link">
+                <i class="pi-angle-right"></i>
+                <i class="pi-angle-right"></i>
+            </a>
+    )}
+
+</nav>
+
+<style is:global>
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pagination__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background-color: white;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+    border: 1px solid black;
+}
+
+.pagination__link.disabled {
+    pointer-events: none;
+    background-color: #f1f1f1;
+    color: #999;
+}
+
+.pagination__link.active {
+    background-color: black;
+    color: white;
+}
+
+.pi-angle-left::before {
+    content: "«";
+}
+
+.pi-angle-right::before {
+    content: "»";
+}
+
+.pagination__link a:hover {
+    background-color: black;
+    color: white;
+}
+</style>
